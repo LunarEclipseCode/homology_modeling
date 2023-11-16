@@ -13,7 +13,6 @@ input_sequence = "MVLSEGEWQLVLHVWAKVEADVAGHGQDILIRLFKSHPETLEKFDRVKHLKTEAEMKASEDL
 print("Step 2")
 result_handle = NCBIWWW.qblast("blastp", "pdb", input_sequence)
 blast_records = NCBIXML.read(result_handle)
-print(blast_records)
 hit = blast_records.alignments[0]
 hit_id = hit.title.split('|')[3]
 
