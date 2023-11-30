@@ -4,7 +4,7 @@ from Bio import SeqIO, Align, PDB
 from Bio.Blast import NCBIWWW, NCBIXML
 from Bio import PDB
 
-protein = "AF_AFB5EZH0F1"
+protein = "AF_AFA0A023GPI8F1"
 
 def fetch_sequence_from_fasta(comp_seq):
     url = f'https://www.rcsb.org/fasta/entry/{comp_seq}/display'
@@ -38,6 +38,8 @@ def read_mapping_file():
     return mapping
 
 query_sequence, query_fasta = fetch_sequence_from_fasta(protein)
+print(query_sequence)
+print(len(query_sequence))
 
 # if found most similar protein once before, use that from mapping
 mapping = read_mapping_file()
@@ -241,20 +243,20 @@ def fix_number_in_lines(input_content):
     previous_amino_acid = None
 
     for line in input_content:
-        if line.startswith('ATOM'): 
+        if line.startswith('ATOM') and 'OXT' not in line: 
             # Check if the residue number in the current line is different from the previous line
             current_amino_acid = line[17:20]
             if current_amino_acid != previous_amino_acid:
                 residue_sequence_number += 1
                 previous_amino_acid = current_amino_acid
-                track = 0
+                track =  aa_atom_count[swapped_code[current_amino_acid]]
             else:
-                
-                
-                
+                track -= 1
+                if track == 0:
+                    residue_sequence_number += 1
+                    track =  aa_atom_count[swapped_code[current_amino_acid]]
                 
             line = line[:6] + f'{atom_serial_number: >5}' + line[11:22] + f'{residue_sequence_number: >4}' + line[26:]
-            track += 1
             atom_serial_number += 1
         
             modified_line = line.rstrip() + '\n'
@@ -299,3 +301,6 @@ if (aligned_query_seq != aligned_template_seq) and ('chains' in template_fasta.l
     
     os.remove('temp.pdb')
     os.remove('selected_output.pdb')
+    
+    print(best_align[0])
+    print(best_align[1])
