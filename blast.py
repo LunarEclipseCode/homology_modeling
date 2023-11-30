@@ -2,10 +2,7 @@ import requests, os
 from io import StringIO
 from Bio import SeqIO, Align, PDB
 from Bio.Blast import NCBIWWW, NCBIXML
-from Bio.Seq import Seq
 from Bio import PDB
-from Bio.SeqUtils import seq1
-from Bio.PDB import PDBParser, PDBIO
 
 protein = "AF_AFB5EZH0F1"
 
@@ -75,7 +72,8 @@ aligner = Align.PairwiseAligner()
 alignments = aligner.align(query_sequence, template_sequence)
 
 best_align1 =  alignments[0]
-best_align2 = alignments[1]
+if len(alignments) > 1:
+    best_align2 = alignments[1]
 
 # print("Aligned Query Sequence:", aligned_query_seq)   #best_align1[0]
 # print("Aligned Template Sequence:", aligned_template_seq)     #best_align[1]
@@ -83,6 +81,23 @@ best_align2 = alignments[1]
 # Generate 3D model
 output_pdb_path = f"{protein}.pdb"
 template_pdb_path = f"{template_id}.pdb"
+
+def update_ter_line(input_lines):
+    # Find the index of the line before TER
+    lines = input_lines
+    for i, line in enumerate(lines):
+        if line.startswith("ATOM"):
+            # Extract information from the ATOM line
+            atom_serial_number = int(line[6:11])
+            amino_acid = line[17:20]
+            residue_number = int(line[22:26])
+            chain_id = line[21]
+
+            # Update TER line
+            if lines[i + 1].startswith("TER"):
+                lines[i + 1] = f"TER    {atom_serial_number + 1:4}      {amino_acid} {chain_id} {residue_number:3}\n"
+    
+    return lines
 
 # Case 1: exact match but template has multiple chains, query has one chain
 def extract_chain(input_pdb_path, chain_id, output_pdb_path):
@@ -96,11 +111,14 @@ def extract_chain(input_pdb_path, chain_id, output_pdb_path):
         lines = infile.readlines()
 
     # Keep only ATOM lines and TER lines
-    filtered_lines = [line for line in lines if line.startswith('ATOM')]
-
+    filtered_lines = [line for line in lines if line.startswith('ATOM') or 
+                      line.startswith('TER') or line.startswith('END')]
+    filtered_lines = update_ter_line(filtered_lines)
+    
     with open(output_pdb_path, 'w') as outfile:
         outfile.writelines(filtered_lines)
-    
+        
+
 if (best_align1[0] == best_align1[1]) and 'chains' in template_fasta.lower():
     extract_chain(template_pdb_path, 'A', output_pdb_path)
 
@@ -130,14 +148,154 @@ def choose_alignment(align1, align2):
             index2 += 1
         else:
             break
-    
-    index = max(index1, index2)
-    
+
+    index = max(index1, index2) + 3
     if align1[0][index:len1] == align2[0][index:len1] and align1[1][index:len1] == align2[1][index:len1]:
-        if align1[0]
-        
+        if align2[0][0] == '-' and align1[0][0] != '-':
+            return align2
+        else:
+            return align1
+
+best_align = best_align1
+
+if len(alignments) > 1:
+    best_align = choose_alignment(best_align1, best_align2)
+
+aligned_query_seq = best_align[0]
+aligned_template_seq = best_align[1]
+
+
+aa_code = {'A': 'ALA', 'R': 'ARG', 'N': 'ASN', 'D': 'ASP', 'C': 'CYS', 'Q': 'GLN', 'E': 'GLU', 'G': 'GLY', 'H': 'HIS', 'I': 'ILE',
+           'L': 'LEU', 'K': 'LYS', 'M': 'MET', 'F': 'PHE', 'P': 'PRO', 'S': 'SER', 'T': 'THR', 'W': 'TRP', 'Y': 'TYR', 'V': 'VAL'}
+
+swapped_code = {value: key for key, value in aa_code.items()}
+
+def ret_atom_count():
+    count_map = {one_letter: 0 for one_letter in swapped_code.values()}
+    file_path = 'aa_format_pdb.txt'
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            codes = line.split()
+            for code in codes:
+                one_letter = swapped_code.get(code, None)
+                if one_letter is not None:
+                    count_map[one_letter] += 1
     
+    count_map = {key: value - 1 for key, value in count_map.items()}
+    return count_map
+
+aa_atom_count = ret_atom_count()
+collision_pdbfix = []
+
+print(aa_atom_count)
+
+def create_pdb():
+    selected_lines = []
+    with open('temp.pdb', 'r') as infile:
+        lines = infile.readlines()
+        line_index = 0
+
+
+    collision = []
+    i = 0
+    while i < len(aligned_query_seq) - 1:
+        if aligned_query_seq[i] == '-' and aligned_template_seq[i+1] == '-':
+            collide = (aligned_query_seq[i+1], aligned_template_seq[i], i+1, i)
+            collision.append(collide)
+        if aligned_query_seq[i+1] == '-' and aligned_template_seq[i] == '-':
+            collide = (aligned_query_seq[i], aligned_template_seq[i+1], i, i+1)
+            collision.append(collide)
+        i+=1
+        
+    i = 0
+
+    while i < len(aligned_query_seq):
+        if aligned_query_seq[i] != aligned_template_seq[i]:
+            if any(i in tup for tup in collision):
+                tuple = next(tup for tup in collision if i in tup)
+                line_update = aa_atom_count[tuple[0]]
+                selected_lines.extend(lines[line_index:line_index + line_update])
+                collision_pdbfix.append((tuple[0], tuple[1], line_index))
+                line_index += aa_atom_count[tuple[1]]
+                i += 2
+                
+            else:
+                line_index += aa_atom_count[aligned_template_seq[i]]
+                i+=1
+
+        if aligned_query_seq[i] == aligned_template_seq[i]:
+            increment = aa_atom_count[aligned_template_seq[i]]
+            selected_lines.extend(lines[line_index:line_index + increment])
+            line_index += increment
+            i+=1
+    
+    selected_lines.extend(lines[-3:])
+    return selected_lines
+    
+def fix_number_in_lines(input_content):
+    modified_lines = []
+
+    atom_serial_number = 1
+    residue_sequence_number = 0
+    previous_amino_acid = None
+
+    for line in input_content:
+        if line.startswith('ATOM'): 
+            # Check if the residue number in the current line is different from the previous line
+            current_amino_acid = line[17:20]
+            if current_amino_acid != previous_amino_acid:
+                residue_sequence_number += 1
+                previous_amino_acid = current_amino_acid
+                track = 0
+            else:
+                
+                
+                
+                
+            line = line[:6] + f'{atom_serial_number: >5}' + line[11:22] + f'{residue_sequence_number: >4}' + line[26:]
+            track += 1
+            atom_serial_number += 1
+        
+            modified_line = line.rstrip() + '\n'
+            modified_lines.append(modified_line)
+        # else:
+        #     modified_lines.append(line)
+    modified_lines.extend(input_content[-2:])
+    
+    return modified_lines
+        
+def update_residue_name(pdb_param, atom_range, new_residue_name):
+    pdb_lines = pdb_param
+    for i, line in enumerate(pdb_lines):
+        if line.startswith("ATOM"):
+            atom_serial_number = int(line[6:11].strip())
+            if atom_range[0] <= atom_serial_number <= atom_range[1]:
+                pdb_lines[i] = line[:17] + new_residue_name + line[20:]
+    return pdb_lines
+
     
 if (aligned_query_seq != aligned_template_seq) and ('chains' in template_fasta.lower()):
-#     extract_chain(template_pdb_path, 'A', f"temp.pdb")
-#     create_pdb(query_sequence, f"temp.pdb", aligned_query_seq, aligned_template_seq, f"{protein}.pdb")
+    extract_chain(template_pdb_path, 'A', f"temp.pdb")
+    content = create_pdb()
+    
+    for i in range(len(collision_pdbfix)):
+        atom_start = collision_pdbfix[i][2] + 1
+        atom_end = collision_pdbfix[i][2] + aa_atom_count[collision_pdbfix[i][0]]
+        content = update_residue_name(content, (atom_start, atom_end), aa_code[collision_pdbfix[i][0]])
+    
+    content = fix_number_in_lines(content)
+     
+    with open('selected_output.pdb', 'w') as outfile:
+        outfile.writelines(content)
+        
+    with open('selected_output.pdb', 'r') as infile:
+        testing = infile.readlines()
+    
+    testing = update_ter_line(testing)
+    filename = f"{protein}_predict.pdb"
+    with open(filename, 'w') as outfile:
+        outfile.writelines(testing)
+    
+    os.remove('temp.pdb')
+    os.remove('selected_output.pdb')

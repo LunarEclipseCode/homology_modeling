@@ -14,7 +14,7 @@ def convert_cif_to_pdb(cif_file, pdb_file):
     pdb_io.save(pdb_file)
 
 if __name__ == "__main__":
-    cif_file = "AF-A0A023GPI8-F1-model_v4.cif"
-    pdb_file = "output.pdb"
+    cif_file = "AF-B5EZH0-F1-model_v4.cif"
+    pdb_file = "AF_AFB5EZH0F1_alphafold.pdb"
 
     convert_cif_to_pdb(cif_file, pdb_file)
