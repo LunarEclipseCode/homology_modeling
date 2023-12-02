@@ -48,4 +48,7 @@ So, for G (GLY), it's gap in template, but for next one, template has R (ARG), w
 
 Also, the complicated part is if G's coordinates is changed, that means you cannot directly copy paste template's coordinates for the rest of the sequence, you have to take changes into account and adjust accordingly.
 
-
+#### Victor: 12/2
+I changed one thing in create_pdb: added the condition i < len(aligned_template_seq) - 1 on line 232
+I tried testing on the following protein but got the error: The strucutres have different number of atoms (CA atoms): https://www.rcsb.org/structure/AF_AFA0A023IWE3F1
+The relevant cif file should already be pushed.
