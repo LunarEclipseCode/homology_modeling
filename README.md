@@ -1,54 +1,206 @@
-## Everything about the code so far.
+In reality, we would use a long amino acid sequence but for explanation purposes, let's assume we are trying to find the 3D structure of sequence 'ADMGY.' After finding the protein that has the most similar sequence to our input, we do sequence alignment. Imagine this is the result:
 
-#### Changes to previous code
+    Input   : -ADM-G
+    Template: KAD-WG
 
-* I have changed the code for the part where given input sequence, we use BLAST to find the protein that has the most similar sequence. The previous code was stuck for some reason.
-  
-  The new code works but don't try with new proteins too often because then the server doesn't respond to too frequent requests. You can use a VPN to bypass this problem though.
-  
-  Also,  fior this reason, I have added a mapping.txt file that when I am asking the server for a match for the first time, the response will be saved to the mapping file, so that we don't have to ask the server anymore if we need it later.
+Now, based on the scoring function, we could have gotten this (and our code looks for these type of patterns).
 
-* Also changed the sequence alignment implementation because the pairwise2 function gives deprecation warning. This took forever :(
-  
-  
-  
+    Input   : -ADMG
+    Template: KADWG
 
-#### Newly added stuff
+Now, we would get template's PDB file from RCSB database. It will look exactly like the following, except the coordinates, I am making them up for this demo. Also, there should be more space between the last two columns, I have reduced the space to avoid scrolling left-right to see the full content.
 
-So, now that we have the alignment and we can download the pdb of the template protein, we have to create the 3D model / the PDB file of the input sequence.
+    ATOM      1  N   LYS A   1     -38.359 -49.550  -3.194  1.00 15.40    N  
+    ATOM      2  CA  LYS A   1     -37.345 -50.032  -2.271  1.00 16.66    C  
+    ATOM      3  C   LYS A   1     -36.138 -49.125  -2.476  1.00 15.50    C  
+    ATOM      4  O   LYS A   1     -36.060 -48.410  -3.474  1.00 15.58    O  
+    ATOM      5  CB  LYS A   1     -36.967 -51.482  -2.592  1.00 18.64    C  
+    ATOM      6  CG  LYS A   1     -38.072 -52.499  -2.331  1.00 22.00    C  
+    ATOM      7  CD  LYS A   1     -38.463 -52.530  -0.855  1.00 24.41    C  
+    ATOM      8  CE  LYS A   1     -39.517 -53.600  -0.566  1.00 26.44    C  
+    ATOM      9  NZ  LYS A   1     -40.793 -53.350  -1.295  1.00 28.24    N
+    ATOM     10  N   ALA A   2     -37.860 -34.963  27.208  1.00 10.42    N  
+    ATOM     11  CA  ALA A   2     -37.897 -33.650  27.843  1.00 11.27    C  
+    ATOM     12  C   ALA A   2     -39.324 -33.238  28.180  1.00 11.22    C  
+    ATOM     13  O   ALA A   2     -39.596 -32.731  29.270  1.00 13.05    O  
+    ATOM     14  CB  ALA A   2     -37.256 -32.611  26.935  1.00 11.43    C
+    ATOM     15  N   ASP A   3     -20.152 -28.710   8.146  1.00 16.15    N  
+    ATOM     16  CA  ASP A   3     -19.245 -28.438   9.257  1.00 16.22    C  
+    ATOM     17  C   ASP A   3     -19.239 -26.945   9.561  1.00 16.30    C  
+    ATOM     18  O   ASP A   3     -18.536 -26.172   8.912  1.00 17.25    O  
+    ATOM     19  CB  ASP A   3     -17.826 -28.899   8.914  1.00 15.60    C  
+    ATOM     20  CG  ASP A   3     -16.884 -28.819  10.100  1.00 15.80    C  
+    ATOM     21  OD1 ASP A   3     -17.273 -28.252  11.148  1.00 16.47    O  
+    ATOM     22  OD2 ASP A   3     -15.749 -29.324   9.982  1.00 16.45    O 
+    ATOM     23  N   TRP A   4     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     24  CA  TRP A   4     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     25  C   TRP A   4     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     26  O   TRP A   4     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     27  CB  TRP A   4     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     28  CG  TRP A   4     -11.366 -14.314  28.664  1.00 14.86    C  
+    ATOM     29  CD1 TRP A   4     -12.298 -13.387  28.295  1.00 13.88    C  
+    ATOM     30  CD2 TRP A   4     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     31  NE1 TRP A   4     -11.721 -12.430  27.492  1.00 15.21    N  
+    ATOM     32  CE2 TRP A   4     -10.393 -12.724  27.333  1.00 15.49    C  
+    ATOM     33  CE3 TRP A   4      -8.829 -14.428  28.061  1.00 14.42    C  
+    ATOM     34  CZ2 TRP A   4      -9.397 -12.050  26.607  1.00 16.83    C  
+    ATOM     35  CZ3 TRP A   4      -7.836 -13.758  27.339  1.00 16.76    C  
+    ATOM     36  CH2 TRP A   4      -8.130 -12.581  26.622  1.00 16.16    C
+    ATOM     37  N   GLY A  19     -14.572 -30.109   2.015  1.00 13.58    N  
+    ATOM     38  CA  GLY A  19     -13.866 -29.554   3.155  1.00 13.52    C  
+    ATOM     39  C   GLY A  19     -13.098 -30.613   3.924  1.00 13.22    C  
+    ATOM     40  O   GLY A  19     -12.926 -31.741   3.450  1.00 12.36    O 
+    TER      41      GLY A  19
+    END
 
-First I tried with [AF_AFA0A023GPI8F1](https://www.rcsb.org/structure/AF_AFA0A023GPI8F1) and it happens to that it exactly matches with [4K1Y](https://www.rcsb.org/structure/4K1Y)) because it happens to be that AF_AFA0A023GPI8F1 is one of the 8 identical chains in 4K1Y. The extract_chain function gets one chain from 4K1Y. Now, the RCSB site contains a 3D model generated of AF_AFA0A023GPI8F1 using AlphaFold program and we want to comparehow similar our model is to theirs. However, the RCSB site's model is in CIF format and so cif_to_pdb.py is to convert that CIF file to PDB so that we can compare.
+Now, atom number 1 - 9 corresponds to Lysine (K in template sequence), 10 - 14 is Alanine (A), 15 -22 is Aspartic Acid (D), 23 - 36 is Tryptophan (W), and finally 37 - 40 is Glycine (G).
 
-Now, to compare, we use RMS (root mean square) and use only carbon atoms because the carbon atoms form the backbone of a protein. We get 0.6 angstom RMS which means our model is very similar to AlphaFold. Now, you might think, well, if it's exact match in sequence, why don't just extracting one chain give RMS of 0 angstrom. That's because when you get one chain from the system, your are ignoring the inter-chain interaction and so the atom's positions in the edge of the chain will not be accurate in our model.
+Now, looking at the sequence alignment, first index is gap for input and the match between two sequences start at Alanine. So, we copy line 10 -14 and line 15-22 of template's PDB file and that's the beginning of creating input's PDB file . 
 
-#### About to be added (I have the idea, currently working on the code)
+    ATOM     10  N   ALA A   2     -37.860 -34.963  27.208  1.00 10.42    N  
+    ATOM     11  CA  ALA A   2     -37.897 -33.650  27.843  1.00 11.27    C  
+    ATOM     12  C   ALA A   2     -39.324 -33.238  28.180  1.00 11.22    C  
+    ATOM     13  O   ALA A   2     -39.596 -32.731  29.270  1.00 13.05    O  
+    ATOM     14  CB  ALA A   2     -37.256 -32.611  26.935  1.00 11.43    C
+    ATOM     15  N   ASP A   3     -20.152 -28.710   8.146  1.00 16.15    N  
+    ATOM     16  CA  ASP A   3     -19.245 -28.438   9.257  1.00 16.22    C  
+    ATOM     17  C   ASP A   3     -19.239 -26.945   9.561  1.00 16.30    C  
+    ATOM     18  O   ASP A   3     -18.536 -26.172   8.912  1.00 17.25    O  
+    ATOM     19  CB  ASP A   3     -17.826 -28.899   8.914  1.00 15.60    C  
+    ATOM     20  CG  ASP A   3     -16.884 -28.819  10.100  1.00 15.80    C  
+    ATOM     21  OD1 ASP A   3     -17.273 -28.252  11.148  1.00 16.47    O  
+    ATOM     22  OD2 ASP A   3     -15.749 -29.324   9.982  1.00 16.45    O 
 
-The next one s a bit more complicated. [AF_AFB5EZH0F1](https://www.rcsb.org/structure/AF_AFB5EZH0F1) almost matches with one chain in #D46. But the key is 'almost' which means there is gaps in the sequence alignment. Now, if there is gaps, how do we predict the atom position when there is a mismatch?
+Now, we have a mismatch. Input has M (Methionine) while template has W(Tryptophan). By Grantham's distance, we know thye are quite similar, so we can use Tryptophan's coordinates for Methionine. However, Methionine needs 8 lines while Tryptophan has 14 lines. Let's see a sample Methionine and Tryptophan entry side by side.
 
-I initially thought about finding a general system but that's too complicated. So, I will code for this specific case and as we later test with more porteins, add more stuff to the code.
+    ATOM     23  N   TRP A   4     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     24  CA  TRP A   4     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     25  C   TRP A   4     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     26  O   TRP A   4     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     27  CB  TRP A   4     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     28  CG  TRP A   4     -11.366 -14.314  28.664  1.00 14.86    C  
+    ATOM     29  CD1 TRP A   4     -12.298 -13.387  28.295  1.00 13.88    C  
+    ATOM     30  CD2 TRP A   4     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     31  NE1 TRP A   4     -11.721 -12.430  27.492  1.00 15.21    N  
+    ATOM     32  CE2 TRP A   4     -10.393 -12.724  27.333  1.00 15.49    C  
+    ATOM     33  CE3 TRP A   4      -8.829 -14.428  28.061  1.00 14.42    C  
+    ATOM     34  CZ2 TRP A   4      -9.397 -12.050  26.607  1.00 16.83    C  
+    ATOM     35  CZ3 TRP A   4      -7.836 -13.758  27.339  1.00 16.76    C  
+    ATOM     36  CH2 TRP A   4      -8.130 -12.581  26.622  1.00 16.16    C
+    =========================================================================
+    ATOM      1  N   MET A   1     -61.935 -49.543   1.151  1.00 24.59    N  
+    ATOM      2  CA  MET A   1     -60.777 -48.606   1.232  1.00 24.23    C  
+    ATOM      3  C   MET A   1     -59.868 -48.698   0.013  1.00 23.49    C  
+    ATOM      4  O   MET A   1     -59.647 -49.781  -0.534  1.00 21.67    O  
+    ATOM      5  CB  MET A   1     -59.950 -48.899   2.480  1.00 27.68    C  
+    ATOM      6  CG  MET A   1     -60.653 -48.575   3.782  1.00 29.68    C  
+    ATOM      7  SD  MET A   1     -59.663 -49.172   5.140  1.00 37.79    S  
+    ATOM      8  CE  MET A   1     -58.247 -48.120   4.983  1.00 34.83    C 
 
-So, if you see the sequence alignment in this case, there are multiple ones with the same score but one is clearly better than the rest (the 2nd alignment in sequence.txt file). However, changing scoring function is not that easy in this case. So, I am currently writing a function that filters between the alignments. Basically the idea is if two alignments are exactly same after index = i where i should be relatively small, for now, let's say below 10. Then, for characters before index i, I will favor the alignment that has starts with a gap for input sequence but no gap in template sequence.
+Now, using site like [Hack-a-Mol](https://chemapps.stolaf.edu/jmol/jsmol/hackamol.htm) we can map out which line corresponds to which atom position. For Tryptophan, it looks like the following. 
 
-Now, before editing a PDB file, we need to understand what different columns mean in a pdb file. Please read the first 2 pages of pdbformat.pdf file in this repo before reading the rest of this file. It took so long to come up with the following idea because there is literally no open source code for this, no paper actually details in depth how they create the 3D model. So, even though it's a re-implementaion project, from here on, it's  orginal work.
+<img src="images/mapping.png" width="300">
+<img src="images/met.png" width="227">
 
-Now if we are trying to create the PDB of 2nd alignment in sequence.txt, the one that looks like:
+Now, looking at TRP and MET side by side, we can see the structure is identical for the first 6 lines of the PDB. Then,sulfur (SD) will be in CD2's position and CE in MET will be in CE3's position for TRP. So, we have:
 
-----MTLPKIKHVRAWFIGGATAEKGAGGGDY
+    ATOM     23  N   TRP A   4     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     24  CA  TRP A   4     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     25  C   TRP A   4     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     26  O   TRP A   4     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     27  CB  TRP A   4     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     28  CG  TRP A   4     -11.366 -14.314  28.664  1.00 14.86    C   
+    ATOM     30  CD2 TRP A   4     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     33  CE3 TRP A   4      -8.829 -14.428  28.061  1.00 14.42    C  
 
-MENIMTLPKIKHVRAWFIGGATAEKGAGGGDY
+However, even though this a MET entry, we will keep it TRP for now, and fix it in the end. FInally, there is a match with Glycine, so we just again copy the lines from template PDB file. Also, to signify, end of chain and end of file marker, we copy the termination (TER) and END line. So, in the end, our input PDB looks like this:
 
-Then, looking at the PDB file of temp.pdb (one chain of 3D46), we can see, we should start from line 34 because the previous lines correspond to M (MET), E (GLU), N(ASN), I(ILM). Now, if we are starting from line 34. So, line 34 will be line 1 in the pdb file of AF_AFB5EZH0F1. However, that means we need to change atom serial number and the residue sequence number. **IF YOU WANT TO START CODING, PLEASE TRY TO DO THIS PART.** Because there is a bit more biology involved part that I have to think about.
+    ATOM     10  N   ALA A   2     -37.860 -34.963  27.208  1.00 10.42    N  
+    ATOM     11  CA  ALA A   2     -37.897 -33.650  27.843  1.00 11.27    C  
+    ATOM     12  C   ALA A   2     -39.324 -33.238  28.180  1.00 11.22    C  
+    ATOM     13  O   ALA A   2     -39.596 -32.731  29.270  1.00 13.05    O  
+    ATOM     14  CB  ALA A   2     -37.256 -32.611  26.935  1.00 11.43    C
+    ATOM     15  N   ASP A   3     -20.152 -28.710   8.146  1.00 16.15    N  
+    ATOM     16  CA  ASP A   3     -19.245 -28.438   9.257  1.00 16.22    C  
+    ATOM     17  C   ASP A   3     -19.239 -26.945   9.561  1.00 16.30    C  
+    ATOM     18  O   ASP A   3     -18.536 -26.172   8.912  1.00 17.25    O  
+    ATOM     19  CB  ASP A   3     -17.826 -28.899   8.914  1.00 15.60    C  
+    ATOM     20  CG  ASP A   3     -16.884 -28.819  10.100  1.00 15.80    C  
+    ATOM     21  OD1 ASP A   3     -17.273 -28.252  11.148  1.00 16.47    O  
+    ATOM     22  OD2 ASP A   3     -15.749 -29.324   9.982  1.00 16.45    O 
+    ATOM     23  N   TRP A   4     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     24  CA  TRP A   4     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     25  C   TRP A   4     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     26  O   TRP A   4     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     27  CB  TRP A   4     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     28  CG  TRP A   4     -11.366 -14.314  28.664  1.00 14.86    C   
+    ATOM     30  CD2 TRP A   4     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     33  CE3 TRP A   4      -8.829 -14.428  28.061  1.00 14.42    C
+    ATOM     37  N   GLY A  19     -14.572 -30.109   2.015  1.00 13.58    N  
+    ATOM     38  CA  GLY A  19     -13.866 -29.554   3.155  1.00 13.52    C  
+    ATOM     39  C   GLY A  19     -13.098 -30.613   3.924  1.00 13.22    C  
+    ATOM     40  O   GLY A  19     -12.926 -31.741   3.450  1.00 12.36    O 
+    TER      41      GLY A  19
+    END
 
-Well, if you follow the sequence alignment, you will after the initial gap, the only mismatch is here.
+Now, we have some postprocessing to do to make this a valid PDB file. First, the atom serial number in column 2 is not correct. It should start from 1 and keep incrementing. Also, the residue number in column 6 is off. It should start from 1 too. So, after fixing these two columns, we have:
 
-ENG-QT
+    ATOM      1  N   ALA A   1     -37.860 -34.963  27.208  1.00 10.42    N  
+    ATOM      2  CA  ALA A   1     -37.897 -33.650  27.843  1.00 11.27    C  
+    ATOM      3  C   ALA A   1     -39.324 -33.238  28.180  1.00 11.22    C  
+    ATOM      4  O   ALA A   1     -39.596 -32.731  29.270  1.00 13.05    O  
+    ATOM      5  CB  ALA A   1     -37.256 -32.611  26.935  1.00 11.43    C
+    ATOM      6  N   ASP A   2     -20.152 -28.710   8.146  1.00 16.15    N  
+    ATOM      7  CA  ASP A   2     -19.245 -28.438   9.257  1.00 16.22    C  
+    ATOM      8  C   ASP A   2     -19.239 -26.945   9.561  1.00 16.30    C  
+    ATOM      9  O   ASP A   2     -18.536 -26.172   8.912  1.00 17.25    O  
+    ATOM     10  CB  ASP A   2     -17.826 -28.899   8.914  1.00 15.60    C  
+    ATOM     11  CG  ASP A   2     -16.884 -28.819  10.100  1.00 15.80    C  
+    ATOM     12  OD1 ASP A   2     -17.273 -28.252  11.148  1.00 16.47    O  
+    ATOM     13  OD2 ASP A   2     -15.749 -29.324   9.982  1.00 16.45    O 
+    ATOM     14  N   TRP A   3     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     15  CA  TRP A   3     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     16  C   TRP A   3     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     17  O   TRP A   3     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     18  CB  TRP A   3     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     19  CG  TRP A   3     -11.366 -14.314  28.664  1.00 14.86    C   
+    ATOM     20  CD2 TRP A   3     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     21  CE3 TRP A   3      -8.829 -14.428  28.061  1.00 14.42    C
+    ATOM     22  N   GLY A   4     -14.572 -30.109   2.015  1.00 13.58    N  
+    ATOM     23  CA  GLY A   4     -13.866 -29.554   3.155  1.00 13.52    C  
+    ATOM     24  C   GLY A   4     -13.098 -30.613   3.924  1.00 13.22    C  
+    ATOM     25  O   GLY A   4     -12.926 -31.741   3.450  1.00 12.36    O 
+    TER      26      GLY A   4
+    END
 
-EN-RQT
-So, for G (GLY), it's gap in template, but for next one, template has R (ARG), while input has gap, Now II was thinking if they both have same number of atoms, then we can replace R's atomic co-ordinates with G's and just make other changes. However, that is not the case here. If you look at file aa_format_pdb.txt, you will see R needs 11 atoms in PDB while G is 9 atoms. So, I have to either figure out the peptide bond length between N and G and G and Q or I have to look for a smilar pattern in a different protein and figure out the co-ordinates.
+Finally, we keep track of collisions like MET and TRP, so we make necessary updates and the final input PDB will look like this:
 
-Also, the complicated part is if G's coordinates is changed, that means you cannot directly copy paste template's coordinates for the rest of the sequence, you have to take changes into account and adjust accordingly.
+    ATOM      1  N   ALA A   1     -37.860 -34.963  27.208  1.00 10.42    N  
+    ATOM      2  CA  ALA A   1     -37.897 -33.650  27.843  1.00 11.27    C  
+    ATOM      3  C   ALA A   1     -39.324 -33.238  28.180  1.00 11.22    C  
+    ATOM      4  O   ALA A   1     -39.596 -32.731  29.270  1.00 13.05    O  
+    ATOM      5  CB  ALA A   1     -37.256 -32.611  26.935  1.00 11.43    C
+    ATOM      6  N   ASP A   2     -20.152 -28.710   8.146  1.00 16.15    N  
+    ATOM      7  CA  ASP A   2     -19.245 -28.438   9.257  1.00 16.22    C  
+    ATOM      8  C   ASP A   2     -19.239 -26.945   9.561  1.00 16.30    C  
+    ATOM      9  O   ASP A   2     -18.536 -26.172   8.912  1.00 17.25    O  
+    ATOM     10  CB  ASP A   2     -17.826 -28.899   8.914  1.00 15.60    C  
+    ATOM     11  CG  ASP A   2     -16.884 -28.819  10.100  1.00 15.80    C  
+    ATOM     12  OD1 ASP A   2     -17.273 -28.252  11.148  1.00 16.47    O  
+    ATOM     13  OD2 ASP A   2     -15.749 -29.324   9.982  1.00 16.45    O 
+    ATOM     14  N   MET A   3     -12.781 -16.422  27.477  1.00 12.60    N  
+    ATOM     15  CA  MET A   3     -11.797 -16.766  28.496  1.00 12.13    C  
+    ATOM     16  C   MET A   3     -12.220 -18.006  29.269  1.00 11.63    C  
+    ATOM     17  O   MET A   3     -13.401 -18.357  29.290  1.00 11.47    O  
+    ATOM     18  CB  MET A   3     -11.608 -15.577  29.433  1.00 12.57    C  
+    ATOM     19  CG  MET A   3     -11.366 -14.314  28.664  1.00 14.86    C   
+    ATOM     20  SD  MET A   3     -10.131 -13.906  28.061  1.00 15.29    C  
+    ATOM     21  CE  MET A   3      -8.829 -14.428  28.061  1.00 14.42    C
+    ATOM     22  N   GLY A   4     -14.572 -30.109   2.015  1.00 13.58    N  
+    ATOM     23  CA  GLY A   4     -13.866 -29.554   3.155  1.00 13.52    C  
+    ATOM     24  C   GLY A   4     -13.098 -30.613   3.924  1.00 13.22    C  
+    ATOM     25  O   GLY A   4     -12.926 -31.741   3.450  1.00 12.36    O 
+    TER      26      GLY A   4
+    END
 
-#### Victor: 12/2
-I changed one thing in create_pdb: added the condition i < len(aligned_template_seq) - 1 on line 232
-I tried testing on the following protein but got the error: The strucutres have different number of atoms (CA atoms): https://www.rcsb.org/structure/AF_AFA0A023IWE3F1
-The relevant cif file should already be pushed.
+Now, if you just copy the MET part, and see the 3D model, you will see the bond length between sulfur and carbon is smaller than it should be. That's the error in our prediction. To overcome this problem, we are trying to multiple sequence alignment instead of finding one best match protein, so that we can directly extract the coordinates.
