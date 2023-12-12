@@ -1,13 +1,10 @@
-import requests
-import os
+import requests, os , tempfile, subprocess
 from io import StringIO
 from Bio import SeqIO, Align, PDB
 from Bio.Blast import NCBIWWW, NCBIXML
 from Bio import PDB
-from itertools import zip_longest
 
-protein = "AF_AFA0A023IWE3F1"
-
+protein = "AF_AFB9K865F1"
 
 def fetch_sequence_from_fasta(comp_seq):
     url = f'https://www.rcsb.org/fasta/entry/{comp_seq}/display'
@@ -22,12 +19,24 @@ def fetch_sequence_from_fasta(comp_seq):
         print(f"Error: Unable to fetch data from {url}")
         return None
 
+def blast_search(sequence):
+    blastp_path = r'./blast-2.15.0+/bin/blastp.exe'
+    db_path = r'./blast-2.15.0+/blast/db/pdbaa'
 
-def blast_search(sequence, database='pdb', num_alignments=1):
-    result_handle = NCBIWWW.qblast(
-        "blastp", database, sequence, alignments=num_alignments)
-    blast_records = NCBIXML.parse(result_handle)
-    return blast_records
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_seq_file:
+        temp_seq_file.write(sequence)
+        temp_seq_file_path = temp_seq_file.name
+
+    cmd = f'"{blastp_path}" -db {db_path} -query {temp_seq_file_path} -outfmt 5'
+
+    try:
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, shell=True)
+        blast_records = NCBIXML.read(StringIO(result.stdout.decode('utf-8')))
+        return blast_records
+
+    finally:
+        if temp_seq_file_path:
+            os.remove(temp_seq_file_path)
 
 
 def get_pdb_id(blast_record):
@@ -35,33 +44,12 @@ def get_pdb_id(blast_record):
         for hsp in alignment.hsps:
             return alignment.accession  # Assuming you want the top hit
 
-
-def read_mapping_file():
-    mapping = {}
-    with open('mapping.txt', 'r') as f:
-        for line in f:
-            query, pdb_id = line.strip().split(' -> ')
-            mapping[query] = pdb_id
-    return mapping
-
-
 query_sequence, query_fasta = fetch_sequence_from_fasta(protein)
 print(query_sequence)
 print(len(query_sequence))
 
-# if found most similar protein once before, use that from mapping
-mapping = read_mapping_file()
-
-if protein in mapping:
-    top_hit_pdb_id = mapping[protein]
-# elif query_sequence in mapping:
-#     top_hit_pdb_id = mapping[query_sequence]
-else:
-    blast_records = blast_search(query_sequence)
-    top_hit_pdb_id = get_pdb_id(next(blast_records))
-    with open('mapping.txt', 'a') as f:
-        f.write(f"{protein} -> {top_hit_pdb_id}\n")
-        # f.write(f"{query_sequence} -> {top_hit_pdb_id}\n")
+blast_records = blast_search(query_sequence)
+top_hit_pdb_id = get_pdb_id(blast_records)
 
 # download the template protein PDB file
 template_id = top_hit_pdb_id[:4]
