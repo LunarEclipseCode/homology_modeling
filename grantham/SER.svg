@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"   viewBox="0.00 0.00 2500.00 2500.00">
+<!-- Created by OpenEye Scientific Software -->
+<!-- Creation Date Fri Dec  8 19:48:08 2023 -->
+<rect width="2500.00" height="2500.00" fill="white" />
+<rect x="10" y="10" width="2480" height="2480" fill="white" />
+<polygon points="1136.65,1517.36 1274.33,1869.67 1372.91,1812.76 " fill="blue" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<polygon points="1136.65,1517.36 1205.49,1693.52 1254.78,1665.06 " fill="black" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1136.65" y1="1517.36" x2="1373.78" y2="1106.64" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1136.65" y1="1517.36" x2="662.38" y2="1517.36" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1290.24" y1="881.05" x2="1408.80" y2="1086.41" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1290.24" y1="881.05" x2="1231.70" y2="779.66" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1220.19" y1="921.49" x2="1338.76" y2="1126.86" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1220.19" y1="921.49" x2="1161.65" y2="820.10" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1610.91" y1="1106.64" x2="1373.78" y2="1106.64" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1610.91" y1="1106.64" x2="1727.99" y2="1106.64" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="543.81" y1="1722.73" x2="662.38" y2="1517.36" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="543.81" y1="1722.73" x2="485.27" y2="1824.12" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<text x="1373.78" y="1995.41" fill="blue" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="1516.58" y="1995.41" fill="blue" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="1618.58" y="2015.81" fill="blue" font-family="Arial" font-size="102" font-style="normal" font-weight="normal" text-anchor="middle">  2 </text>
+<text x="1474.56" y="2135.32" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="1047.72" y="1396.01" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  CA(S) </text>
+<text x="1433.06" y="1241.99" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  C </text>
+<text x="1136.64" y="763.23" fill="red" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="1035.86" y="554.02" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="603.09" y="1447.35" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  CB </text>
+<text x="425.24" y="1995.41" fill="red" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="269.18" y="1995.41" fill="red" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="324.46" y="2135.32" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  OG </text>
+<text x="1848.05" y="1173.96" fill="red" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="2004.11" y="1173.96" fill="red" font-family="Arial" font-size="204" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="2198.27" y="1139.31" fill="green" font-family="Arial" font-size="99" font-style="normal" font-weight="normal" text-anchor="middle">  OXT </text>
+</svg>

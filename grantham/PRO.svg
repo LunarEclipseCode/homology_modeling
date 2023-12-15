@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"   viewBox="0.00 0.00 2500.00 2500.00">
+<!-- Created by OpenEye Scientific Software -->
+<!-- Creation Date Fri Dec  8 19:47:41 2023 -->
+<rect width="2500.00" height="2500.00" fill="white" />
+<rect x="10" y="10" width="2480" height="2480" fill="white" />
+<line x1="1018.50" y1="1300.58" x2="898.51" y2="1213.32" stroke="blue" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1018.50" y1="1300.58" x2="1228.64" y2="1453.41" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="599.57" y1="1300.58" x2="718.42" y2="1213.59" stroke="blue" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="599.57" y1="1300.58" x2="390.78" y2="1453.41" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1279.77" y1="1443.40" x2="1275.95" y2="1431.59" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1330.89" y1="1433.39" x2="1323.25" y2="1409.77" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1382.02" y1="1423.38" x2="1370.56" y2="1387.95" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1433.15" y1="1413.37" x2="1417.87" y2="1366.13" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1484.27" y1="1403.37" x2="1465.18" y2="1344.31" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1535.40" y1="1393.36" x2="1512.48" y2="1322.49" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1586.53" y1="1383.35" x2="1559.79" y2="1300.67" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1637.65" y1="1373.34" x2="1607.10" y2="1278.85" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1688.78" y1="1363.33" x2="1654.41" y2="1257.03" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1739.91" y1="1353.33" x2="1701.71" y2="1235.20" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1228.64" y1="1453.41" x2="1067.36" y2="1945.79" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1883.36" y1="1500.17" x2="1691.40" y2="1326.83" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1883.36" y1="1500.17" x2="1978.60" y2="1586.17" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1942.17" y1="1435.03" x2="1750.22" y2="1261.70" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1942.17" y1="1435.03" x2="2037.41" y2="1521.03" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1774.94" y1="1041.36" x2="1720.81" y2="1294.27" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1774.94" y1="1041.36" x2="1801.80" y2="915.88" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1067.36" y1="1945.79" x2="549.32" y2="1945.79" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="549.32" y1="1945.79" x2="390.78" y2="1453.41" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<text x="808.36" y="1221.35" fill="blue" font-family="Arial" font-size="223" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="808.36" y="1042.95" fill="blue" font-family="Arial" font-size="223" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="806.91" y="849.32" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="1365.54" y="1626.47" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  CA(S) </text>
+<text x="1893.07" y="1274.21" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  C </text>
+<text x="2104.72" y="1714.52" fill="red" font-family="Arial" font-size="223" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="2267.88" y="1823.90" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="1143.23" y="2086.15" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  CB </text>
+<text x="473.06" y="2085.87" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  CG </text>
+<text x="267.76" y="1449.18" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  CD </text>
+<text x="1829.08" y="862.05" fill="red" font-family="Arial" font-size="223" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="1999.67" y="862.05" fill="red" font-family="Arial" font-size="223" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="1875.09" y="609.13" fill="green" font-family="Arial" font-size="108" font-style="normal" font-weight="normal" text-anchor="middle">  OXT </text>
+</svg>

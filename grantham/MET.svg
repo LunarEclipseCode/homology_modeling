@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"   viewBox="0.00 0.00 2500.00 2500.00">
+<!-- Created by OpenEye Scientific Software -->
+<!-- Creation Date Fri Dec  8 19:47:09 2023 -->
+<rect width="2500.00" height="2500.00" fill="white" />
+<rect x="10" y="10" width="2480" height="2480" fill="white" />
+<line x1="1513.52" y1="1112.43" x2="1505.34" y2="1117.16" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1502.17" y1="1083.33" x2="1485.81" y2="1092.77" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1490.82" y1="1054.22" x2="1466.28" y2="1068.39" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1479.47" y1="1025.12" x2="1446.74" y2="1044.01" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1468.12" y1="996.01" x2="1427.21" y2="1019.63" stroke="black" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1456.77" y1="966.90" x2="1407.68" y2="995.25" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1445.42" y1="937.80" x2="1388.15" y2="970.86" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1434.07" y1="908.69" x2="1368.62" y2="946.48" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1422.72" y1="879.59" x2="1349.09" y2="922.10" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1411.37" y1="850.48" x2="1329.55" y2="897.72" stroke="blue" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1524.87" y1="1141.54" x2="1918.53" y2="1141.54" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1524.87" y1="1141.54" x2="1328.04" y2="1482.46" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1987.51" y1="1329.00" x2="1889.09" y2="1158.54" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1987.51" y1="1329.00" x2="2035.07" y2="1411.37" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="2046.39" y1="1295.00" x2="1947.97" y2="1124.54" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="2046.39" y1="1295.00" x2="2093.95" y2="1377.38" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="2016.95" y1="971.08" x2="1918.53" y2="1141.54" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="2016.95" y1="971.08" x2="2064.51" y2="888.70" stroke="red" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="1328.04" y1="1482.46" x2="934.38" y2="1482.46" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="835.96" y1="1652.92" x2="934.38" y2="1482.46" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="835.96" y1="1652.92" x2="781.22" y2="1747.74" stroke="#ebc80a" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="540.71" y1="1823.38" x2="650.19" y2="1823.38" stroke="#ebc80a" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<line x1="540.71" y1="1823.38" x2="343.88" y2="1823.38" stroke="black" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" />
+<text x="1328.04" y="856.72" fill="blue" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="1158.04" y="856.72" fill="blue" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="1243.04" y="873.72" fill="blue" font-family="Arial" font-size="85" font-style="normal" font-weight="normal" text-anchor="middle">  2 </text>
+<text x="1244.39" y="682.79" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  N </text>
+<text x="1598.68" y="1296.44" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  CA(S) </text>
+<text x="1869.33" y="1083.37" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  C </text>
+<text x="2115.36" y="1538.56" fill="red" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="2199.02" y="1654.41" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="1377.25" y="1594.75" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  CB </text>
+<text x="885.17" y="1424.29" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  CG </text>
+<text x="737.54" y="1879.48" fill="#ebc80a" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  S </text>
+<text x="821.20" y="1995.34" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  SD </text>
+<text x="245.47" y="1850.44" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  CE </text>
+<text x="2115.36" y="856.72" fill="red" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  O </text>
+<text x="2245.41" y="856.72" fill="red" font-family="Arial" font-size="170" font-style="normal" font-weight="normal" text-anchor="middle">  H </text>
+<text x="2199.02" y="682.78" fill="green" font-family="Arial" font-size="82" font-style="normal" font-weight="normal" text-anchor="middle">  OXT </text>
+</svg>
