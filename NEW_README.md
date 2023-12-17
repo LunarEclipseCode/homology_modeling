@@ -1,5 +1,20 @@
+
 # Homology Modeling For 3D Protein Structure Prediction
 
-Decoding protein 3D structures from amino acid sequences is imperative for comprehending their functions with applications spanning biochemistry, molecular biology, and drug discovery. The resulting insights aid in drug design, biotechnological engineering, and understanding diseases linked to abnormal protein structures. This process involves three main approaches: ab initio modeling, experimental methods (X-ray crystallography and NMR spectroscopy), and comparative modeling.
+Welcome to the Protein Structure Prediction GitHub repository! Our project focuses on advancing the understanding of protein structures by employing computational methods, specifically comparative modeling. We recognize the significance of determining 3D protein structures for applications ranging from drug design to unraveling disease mechanisms. This toolkit utilizes the RCSB Protein Data Bank, incorporating AlphaFold, to retrieve amino acid sequences. Leveraging the Basic Local Alignment Search Tool (BLAST) and efficient sequence alignment techniques, we enhance the accuracy of predictions. Our post-processing methods optimize alignments, and PDB file generation produces organized files for further analysis. The project culminates in a comparative analysis with AlphaFold, ensuring the reliability of our predictions. 
 
-Ab initio modeling predicts structures based solely on amino acid sequences, using physics and energy minimization. Experimental methods, while accurate, are costly and time-consuming. In "Template-Based Protein Structure Modeling," Fiser notes the rarity of experimentally known 3D models, emphasizing the need for computational approaches like homology modeling. Our project delves into comparative modeling, predicting a target protein's 3D structure by aligning its sequence with a homologous protein, leveraging shared functions and structures. This exploration responds to the challenges of experimentally determining protein structures, aiming to bridge this gap using computational tools like homology modeling.
+## Getting Started
+
+### Requirements
+
+Before you begin, make sure you have Python installed on your system. You can download Python from [python.org](https://www.python.org/).
+
+### Installing Dependencies
+
+To run this project, you'll need to install the following Python modules. You can do this using the following `pip` commands:
+
+```bash
+pip install requests
+pip install numpy  # This may be required by Biopython
+pip install biopython
+pip install pard  # Make sure to check for the latest version on PyPI
