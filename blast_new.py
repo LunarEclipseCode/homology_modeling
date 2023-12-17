@@ -1,4 +1,4 @@
-import requests, signal, re
+import requests, signal, random
 import os, subprocess, tempfile
 from io import StringIO
 from Bio import SeqIO, Align, PDB
@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pard.grantham import grantham
 
 # protein = "AF_AFB9K865F1"
-protein = "AF_AFA5IEB3F1"
+protein = "AF_AFQ0T828F1"
 
 # given the protein id, return the sequence, and first line of the fasta file
 # first line of fasta file to know whether the protein has multiple identical chains
@@ -338,8 +338,8 @@ for k in range (len(sorted_protein)):
     sorted_protein[k] = (sorted_protein[k][0], sorted_protein[k][1], sorted_protein[k][2], 
                          process_alignment(sorted_protein[k][3]))
     
-# print(sorted_protein[0][3][0])
-# print(sorted_protein[0][3][1])
+print(sorted_protein[0][3][0])
+print(sorted_protein[0][3][1])
 
 combine_pdb = []
 
@@ -375,10 +375,7 @@ def find_longest_exact_match(tuples_array):
                 if aligned_input[i] == aligned_template[i]:
                     match_length += 1
                 elif aligned_input[i] != aligned_template[i] and aligned_input[i].isalpha() and aligned_template[i].isalpha():
-                    if grantham(aligned_input[i], aligned_template[i]) <= 150:
                         match_length += 1
-                    else:
-                        break
                 # elif aligned_input[i] == '-' and aligned_template[i] != '-':
                 #     match_length += 1
                 else:
@@ -482,6 +479,7 @@ def update_ter_line(input_lines):
             # Update TER line
             if lines[i + 1].startswith("TER"):
                 lines[i +1] = f"TER    {atom_serial_number + 1:4}      {amino_acid} {chain_id} {residue_number:3}\n"
+   
     return lines
 
 def ret_atom_count():
@@ -544,21 +542,96 @@ def extract_aa_sequence(pdb_file_path):
 
     return amino_acid_sequence
 
+ideal_entries = {}
+
 def aa_processing(current, new, pdb_lines):
     hydrophobic = ['CYS', 'ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']
     special_case = ['CYS', 'GLY', 'PRO']
     polar_uncharged = ['SER', 'THR', 'ASN', 'GLN']
-    polar_charged = ['ARG']
+    polar_charged = ['ARG', 'HIS', 'LYS', 'ASP', 'GLU']
+    
+    aa = hydrophobic + special_case + polar_uncharged + polar_charged
     
     if new == swapped_code['GLY']:
         pdb_lines = pdb_lines[:4]
         pdb_lines = [line.replace(line.split()[3], 'GLY') for line in pdb_lines]
+    
+    if new == swapped_code['ALA']:
+        if current != swapped_code['GLY']:
+            pdb_lines = pdb_lines[:5]
+            pdb_lines = [line.replace(line.split()[3], 'GLY') for line in pdb_lines]
+        else:
+            ala_entry = ideal_entries['ALA']
+    
+    if new == swapped_code['PHE'] and current == swapped_code['LEU']:
+        phe_entry = ideal_entries['PHE']
+        pdb_lines.extend(phe_entry[-3:])
+        for k in range(-3, 0, 1):
+         
+            x_coord_pdb = float(pdb_lines[k-1][30:38]) + (float(phe_entry[k][30:38]) - float(phe_entry[k-1][30:38]))
+            y_coord_pdb = float(pdb_lines[k-1][38:46]) + (float(phe_entry[k][38:46]) - float(phe_entry[k-1][38:46]))
+            z_coord_pdb = float(pdb_lines[k-1][46:54]) + (float(phe_entry[k][46:54]) - float(phe_entry[k-1][46:54]))
+            x_coord_pdb_str = f"{x_coord_pdb:8.3f}"
+            y_coord_pdb_str = f"{y_coord_pdb:8.3f}"
+            z_coord_pdb_str = f"{z_coord_pdb:8.3f}"
+            updated_line = pdb_lines[k][:30] + x_coord_pdb_str + y_coord_pdb_str + z_coord_pdb_str + pdb_lines[k][54:]
+            pdb_lines[k] = updated_line
 
+        pdb_lines = [line.replace(line.split()[3], 'PHE') for line in pdb_lines]
+        
+        temp_factor = []
+        for q in range(0, len(pdb_lines) -3):
+            temp_factor.append(float(pdb_lines[q][60:66]))
+        print(temp_factor)
+        
+        min_value = min(temp_factor)
+        max_value = max(temp_factor)
+
+        # # Generate random numbers and update the temperature factor of the last three elements
+        for i in range(-3, 0):
+            random_value = random.uniform(min_value, max_value)
+            random_val_str = f"{random_value:8.2f}"
+            newline = pdb_lines[i][:60] + random_val_str + pdb_lines[i][66:]
+            newline = newline[:60] + newline[62:]
+            pdb_lines[i] = newline
+
+        
+    if new == swapped_code['SER'] and current == swapped_code['ALA']:
+        phe_entry = ideal_entries['ALA']
+        pdb_lines.extend(phe_entry[-1:])
+        
+        for k in range(-1, 0, 1):
+            x_coord_pdb = float(pdb_lines[k-1][30:38]) + (float(phe_entry[k][30:38]) - float(phe_entry[k-1][30:38]))
+            y_coord_pdb = float(pdb_lines[k-1][38:46]) + (float(phe_entry[k][38:46]) - float(phe_entry[k-1][38:46]))
+            z_coord_pdb = float(pdb_lines[k-1][46:54]) + (float(phe_entry[k][46:54]) - float(phe_entry[k-1][46:54]))
+            x_coord_pdb_str = f"{x_coord_pdb:8.3f}"
+            y_coord_pdb_str = f"{y_coord_pdb:8.3f}"
+            z_coord_pdb_str = f"{z_coord_pdb:8.3f}"
+            updated_line = pdb_lines[k][:30] + x_coord_pdb_str + y_coord_pdb_str + z_coord_pdb_str + pdb_lines[k][54:]
+            pdb_lines[k] = updated_line
+            
+        pdb_lines = [line.replace(line.split()[3], 'SER') for line in pdb_lines]
+        
+        temp_factor = []
+        for q in range(0, len(pdb_lines) -1):
+            temp_factor.append(float(pdb_lines[q][60:66]))
+        
+        min_value = min(temp_factor)
+        max_value = max(temp_factor)
+
+        # # Generate random numbers and update the temperature factor of the last three elements
+        for i in range(-1, 0):
+            random_value = random.uniform(min_value, max_value)
+            random_val_str = f"{random_value:8.2f}"
+            newline = pdb_lines[i][:60] + random_val_str + pdb_lines[i][66:]
+            newline = newline[:60] + newline[62:]
+            pdb_lines[i] = newline
+        
     return pdb_lines
         
-
-ideal_entries = {}
-
+        
+        
+        
 def ideal_aa_entries():
     current_amino_acid = None
     with open('aa_format_pdb.txt', 'r') as file:
@@ -609,7 +682,22 @@ def fix_number_in_lines(input_content):
     modified_lines[-3] = line[:6] + f'{atom_serial_number: >5}' + line[11:22] + f'{residue_sequence_number: >4}' + line[26:]
    
     return modified_lines
+
+def send_index_update(lines, residue_num):
+    atom_records = []
+    for line in lines:
+        if 'TER' not in line and 'END' not in line:
+            if int(line[22:26]) == residue_num:
+                atom_records.append(line)
+
+    # index_update = len(atom_records)
+    atom_records = [entry for entry in atom_records if entry[16] == 'A' or  entry[16] == " "]
     
+    for i in range(len(atom_records)):
+        if atom_records[i][16] == 'A' or atom_records[i][16] == 'B':
+            atom_records[i] = atom_records[i][:16] + ' ' + atom_records[i][17:]
+    
+    return atom_records
 
 def create_pdb(aligned_sequences, begin_index, end_index, fasta_aa):
     selected_lines = []
@@ -628,33 +716,30 @@ def create_pdb(aligned_sequences, begin_index, end_index, fasta_aa):
     alignment = aligner.align(pdb_aa, fasta_aa)[0]
     print("Aligned PDB Sequence:", alignment[0])
     print("Aligned FASTA Sequence:", alignment[1])
+    # for i in range(begin_index):
+    #     if aligned_template_seq != '-' and alignment[0][i] != '-':
+    #         line_index += aa_atom_count[aligned_template_seq[i]]
 
-    for i in range(begin_index):
-        if aligned_template_seq != '-' and alignment[0][i] != '-':
-            line_index += aa_atom_count[aligned_template_seq[i]]
-
-    # print(line_index)
+    residue_number = begin_index + 1
+    
     for i in range(begin_index, end_index+1, 1):
         if aligned_query_seq[i] == aligned_template_seq[i]:
-            increment = aa_atom_count[aligned_template_seq[i]]
-            atom_records = lines[line_index:line_index + increment]     
-            residues = set()
-            for line in atom_records:
-                residue_name = line[17:20].strip()
-                residues.add(residue_name)
+            atom_records_list = send_index_update(lines, residue_number)
+
+            # residues = set()
+            # for line in atom_records:
+            #     residue_name = line[17:20].strip()
+            #     residues.add(residue_name) 
             
-            # print(residues)
-            
-            
-            if len(residues) > 1:
-                ideal_entry = ideal_entries[aa_code[aligned_template_seq[i]]]
+            # if len(residues) > 1:
+            #     ideal_entry = ideal_entries[aa_code[aligned_template_seq[i]]]
                 
-                expected_entries = []
-                specific_lines = [element for element in atom_records if aa_code[aligned_template_seq[i]] in element]
-                current_entries = []
-                for line in ideal_entry:
-                    atom_type = line[12:16].strip()
-                    expected_entries.append(atom_type)
+            #     expected_entries = []
+            #     specific_lines = [element for element in atom_records if aa_code[aligned_template_seq[i]] in element]
+            #     current_entries = []
+            #     for line in ideal_entry:
+            #         atom_type = line[12:16].strip()
+            #         expected_entries.append(atom_type)
                 
                 # print(expected_entries)
                 # print(current_entries)
@@ -669,25 +754,62 @@ def create_pdb(aligned_sequences, begin_index, end_index, fasta_aa):
             #     #             lines[line_index:line_index] = lines_to_add
             #     #             line_index += len(lines_to_add)
             #     print(amino_acids)
-            selected_lines.extend(atom_records)
-            line_index += increment
+            if len(atom_records_list) == 0:
+                print(residue_number)
+                template = ideal_entries[aa_code[aligned_query_seq[i]]]
+                add_lines = ideal_entries[aa_code[aligned_query_seq[i]]]
+                prev_list = send_index_update(lines, residue_number -1 )
+                forward_list = send_index_update(lines, residue_number +1 )
+                
+                if len(forward_list) == 0:
+                    forward_list = send_index_update(lines, residue_number +2)
+                   
+                
+                for line in prev_list:
+                    if 'CA' in line:
+                        prev_ca = line
+                
+                for line in forward_list:
+                    if 'CA' in line:
+                        forward_ca = line
+
+                        
+                for u in range(len(add_lines)):
+                    if 'CA' in add_lines[u]:
+                        x_coord_pdb = (float(prev_ca[30:38]) + float(forward_ca[30:38]))/2
+                        y_coord_pdb = (float(prev_ca[38:46]) + float(forward_ca[38:46]))/2
+                        z_coord_pdb = (float(prev_ca[46:54]) + float(forward_ca[46:54]))/2
+                        x_coord_pdb_str = f"{x_coord_pdb:8.3f}"
+                        y_coord_pdb_str = f"{y_coord_pdb:8.3f}"
+                        z_coord_pdb_str = f"{z_coord_pdb:8.3f}"
+                        add_lines[u] = add_lines[u][:30] + x_coord_pdb_str + y_coord_pdb_str + z_coord_pdb_str + add_lines[u][54:]
+                        break
+
+                selected_lines.extend(add_lines)
+                residue_number += 1
+            
+            else:
+            
+                selected_lines.extend(atom_records_list)
+                # line_index += line_index_update
+                residue_number += 1
         
         if aligned_query_seq[i] != aligned_template_seq[i]:
             if aligned_query_seq[i].isalpha() and aligned_template_seq[i].isalpha():
-                process_lines = []
-                increment = aa_atom_count[aligned_template_seq[i]]
-                process_lines = lines[line_index:line_index + increment]
-                amino_acids = list(set([re.search(r'ATOM\s+\d+\s+\w+\s+(\w+)', record).group(1) for record in process_lines]))
-                if len(amino_acids) > 1:
-                    amino_acid = aligned_template_seq[i]
-                    ideal_entry = ideal_entries.get(amino_acid, [])
-                    expected_entries = [re.search(r'ATOM\s+\d+\s+(\w+)\s+', record).group(1) for record in ideal_entry]
-
-                    # Get the missing entries
-                    missing_entries = set(expected_entries) - set(amino_acids)
-                    increment -= len(missing_entries)
-                else:
-                    line_index += aa_atom_count[aligned_template_seq[i]]
+                atom_records_list = send_index_update(lines, residue_number)
+                process_lines = atom_records_list
+                
+                # amino_acids = list(set([re.search(r'ATOM\s+\d+\s+\w+\s+(\w+)', record).group(1) for record in process_lines]))
+                # if len(amino_acids) > 1:
+                #     amino_acid = aligned_template_seq[i]
+                #     ideal_entry = ideal_entries.get(amino_acid, [])
+                #     expected_entries = [re.search(r'ATOM\s+\d+\s+(\w+)\s+', record).group(1) for record in ideal_entry]
+                #     print(amino_acids)
+                #     # Get the missing entries
+                #     missing_entries = set(expected_entries) - set(amino_acids)
+                #     increment -= len(missing_entries)
+                # else:
+                # line_index += line_index_update
                 # for missing_entry in missing_entries:
                 #     for record in ideal_entry:
                 #         if f' {missing_entry} ' in record:
@@ -698,11 +820,14 @@ def create_pdb(aligned_sequences, begin_index, end_index, fasta_aa):
                 # print(amino_acids)
 
                 selected_lines.extend(aa_processing(aligned_template_seq[i], aligned_query_seq[i], process_lines))
-            
+                residue_number += 1
             
             if aligned_query_seq[i] == '-' and aligned_template_seq[i].isalpha():
-                line_index += aa_atom_count[aligned_template_seq[i]]
+                line_index_update, atom_records_list = send_index_update(lines, residue_number)   
+                line_index += line_index_update
+                residue_number += 1
     #       
+        # print(atom_records_list)
                 
     # while i < len(aligned_query_seq) and i < len(aligned_template_seq) - 1:
     #     if aligned_query_seq[i] != aligned_template_seq[i]:
@@ -724,8 +849,16 @@ def create_pdb(aligned_sequences, begin_index, end_index, fasta_aa):
     #         selected_lines.extend(lines[line_index:line_index + increment])
     #         line_index += increment
     #         i += 1
-
-    selected_lines.extend(lines[-3:])
+    check_oxt = False
+    for line in lines:
+        if "OXT" in line:
+            check_oxt = True
+            break
+    
+    if check_oxt:
+        selected_lines.extend(lines[-3:])
+    else:
+        selected_lines.extend(lines[-2:])
     
     return selected_lines
 
@@ -740,6 +873,22 @@ for i in range(len(protein_list)):
     
     if 'chains' in protein_tuple[2].lower():
         extract_chain(template_pdb_path, 'A', "temp.pdb")
+        content = create_pdb(protein_tuple[3], protein_list[i][1], protein_list[i][2], protein_tuple[1])
+    else:
+        with open(template_pdb_path, "r") as input_file, open("temp.pdb", "w") as output_file:
+            for line in input_file:
+                # Check if the line starts with "ATOM", "TER", or "END"
+                if line.startswith(("ATOM", "TER", "END")):
+                    # Write the line to the output file
+                    output_file.write(line)
+        
+        with open('temp.pdb', 'r') as infile:
+            lines = infile.readlines()
+        lines = fix_number_in_lines(lines)
+        
+        with open('temp.pdb', 'w') as outfile:
+            outfile.writelines(lines)
+        
         content = create_pdb(protein_tuple[3], protein_list[i][1], protein_list[i][2], protein_tuple[1])
     
     content = fix_number_in_lines(content)
@@ -757,5 +906,7 @@ for i in range(len(protein_list)):
     with open(file_path, 'w') as outfile:
          outfile.writelines(testing)
 
-    os.remove('temp.pdb')
+    # os.remove('temp.pdb')
     os.remove('selected_output.pdb')
+    
+print(extract_aa_sequence(file_path))

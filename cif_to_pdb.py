@@ -1,5 +1,6 @@
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 from Bio.PDB import MMCIFParser, PDBIO
+import os
 
 
 def convert_cif_to_pdb(cif_file, pdb_file):
@@ -16,9 +17,7 @@ def convert_cif_to_pdb(cif_file, pdb_file):
 
 
 if __name__ == "__main__":
-    cif_file = "AF-AFA0A023IWE3-F1-model_v4.cif"
-    # "AF-A0A023GPI8-F1-model_v4.cif"
-    pdb_file = "AF_AFA0A023IWE3F1_alphafold.pdb"
-    # "AF_AFA0A023GPI8F1_alphafold.pdb"
-
+    cif_file = os.path.join(os.getcwd(), f"generated_models", f"AF-P30820-F1-model_v4.cif")
+    pdb_file = os.path.join(os.getcwd(), f"generated_models", f"AF_AFP30820F1_alphafold.pdb")
     convert_cif_to_pdb(cif_file, pdb_file)
+

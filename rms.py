@@ -1,6 +1,6 @@
 from Bio import PDB
 from Bio.PDB import Superimposer
-
+import os
 
 def extract_all_atoms(structure):
     return [atom for atom in structure.get_atoms() if atom.id == 'CA']
@@ -32,11 +32,9 @@ def calculate_rmsd(pdb1, pdb2):
 
 
 if __name__ == "__main__":
-    # Replace 'path_to_pdb1.pdb' and 'path_to_pdb2.pdb' with the actual paths to your PDB files
-    pdb_file1 = "AF_AFA0A023IWE3F1_alphafold.pdb"
-    # "AF_AFB5EZH0F1_alphafold.pdb"
-    pdb_file2 = "AF_AFA0A023IWE3F1_predict.pdb"
-    # "AF_AFB5EZH0F1_predict.pdb"
+    
+    pdb_file1 = os.path.join(os.getcwd(), f"generated_models", f"AF_AFP30820F1_alphafold.pdb")
+    pdb_file2 = os.path.join(os.getcwd(), f"generated_models", f"AF_AFP30820F1_predict.pdb")
 
     try:
         rmsd_value = calculate_rmsd(pdb_file1, pdb_file2)
