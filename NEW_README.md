@@ -30,3 +30,24 @@ To run BLAST:
 ```bash
 python blast_new.py
 ```
+### Convert CIF into PDB
+
+Converts a 3D protein structure model stored in CIF (Crystallographic Information File) format to the PDB (Protein Data Bank) format. 
+
+To convert CIF to PDB:
+
+```bash
+python cif_to_pdb.py
+```
+
+### Compute RMS between protein structures
+
+Calculates the Root Mean Square Deviation (RMSD) between two protein structures in PDB format. It utilizes the Biopython  PDB and Superimposer modules, to align the structures and measure the similarity of their atomic positions.
+
+To compute RMS:
+
+```bash
+python rms.py pdf_file1 pbd_file2
+```
+
+This function takes two args, the protein strucures (PDB files) to compare.
