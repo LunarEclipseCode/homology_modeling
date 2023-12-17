@@ -18,3 +18,15 @@ pip install requests
 pip install numpy  # This may be required by Biopython
 pip install biopython
 pip install pard  # Make sure to check for the latest version on PyPI
+```
+## Usage
+
+### BLAST
+
+BLAST (Basic Local Alignment Search Tool) is used to compare protein query sequences with a protein database to identify homologous proteins.
+
+To run BLAST:
+
+```bash
+python blast_new.py
+```
